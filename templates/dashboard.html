@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studies Recommendation System || Dashboard</title>
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome Icons link -->
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css"
+      href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Poppins"
+      rel="stylesheet">
+    <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      flex-direction: column;
+      background-color: #f7f8fc;
+    }
+
+    .header {
+      background-color: #190f49;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: calc(100% - 250px);
+      margin-left: 250px;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header .user {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .header .user .circle {
+      background-color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+    }
+
+    .header .user .circle i {
+      color: #190f49;
+    }
+
+    .header .user h6,
+    .header .user small {
+      margin: 0;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #2E3C7E;
+      padding: 20px;
+      position: fixed;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      overflow-y: auto;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar h3 {
+      color: #fff;
+      text-align: left;
+      margin-bottom: 30px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar-menu li a {
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar-menu li a:hover,
+    .sidebar-menu li a.active {
+      background-color: #190f49;
+      color: #fff;
+    }
+
+    .sidebar-menu li a i {
+      margin-right: 10px;
+    }
+
+    .logout {
+      color: #fff;
+      background-color: #190f49;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+      position: absolute;
+      bottom: 30px;
+      width: calc(100% - 40px);
+      text-align: center;
+    }
+
+    .logout:hover {
+      background-color: #2E3C7E;
+      color: #fff;
+    }
+
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      flex: 1;
+      margin-top: 80px;
+    }
+
+    section {
+      margin-bottom: 40px;
+      display: none;
+    }
+
+    .card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+      background-color: #190f49;
+      color: #fff;
+      border-bottom: none;
+      font-size: 18px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 10px 20px;
+    }
+
+    .footer {
+      background-color: #190f49;
+      color: #fff;
+      text-align: center;
+      padding: 30px 20px;
+      position: fixed;
+      bottom: 0;
+      width: calc(100% - 250px);
+      left: 250px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Custom styles for the Recent Data Predictions table */
+    .table-container {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .table-container h2 {
+      margin-bottom: 20px;
+      color: #190f49;
+      
+    }
+
+    .table thead th {
+      background-color: #2E3C7E;
+      color: #fff;
+      border: none;
+      
+    }
+
+    .table tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .table tbody tr:hover {
+      background-color: #ddd;
+    }
+
+    .table th,
+    .table td {
+      padding: 8px 7px;
+      text-align: left;
+    }
+
+    /* Custom styles for the Keys section */
+    .keys-section .card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-bottom: 15px;
+    }
+
+    .keys-section .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .keys-section .card-header {
+      background-color: #190f49;
+      color: #fff;
+      border-bottom: none;
+      font-size: 18px;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      padding: 10px 20px;
+    }
+
+    .keys-section .card-body {
+      padding: 20px;
+    }
+
+    .keys-section .card-body p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .keys-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .keys-image {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .keys-image img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Visualization Section Styles */
+    .visualization-section {
+      background-color: #f9fafb;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .visualization-section .card {
+      margin-bottom: 20px;
+    }
+
+    .visualization-section .card-header {
+      font-size: 20px;
+      font-weight: 500;
+      background-color: #2E3C7E;
+    }
+
+    .visualization-section .card-body {
+      padding: 20px;
+    }
+
+    .visualization-section img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .visualization-section p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6c757d;
+      text-align: left;
+      padding: 8px;
+    }
+  </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="user">
+        <div class="circle">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="user-content">
+          <h6 class="name text-white">{{ user_data[1] }}</h6>
+          <small class="text-white">@{{ user_data[2] }}</small>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header mt-4">
+        <h3 class="text-left">SCR SYSTEM</h3>
+      </div>
+      <ul class="sidebar-menu mt-5">
+        <li><a href="#dashboard" class="active">
+            <i class="bi bi-house font-bold"></i> Dashboard</a></li>
+        <li><a href="#predictions">
+            <!-- Prediction ICON-->
+            <i class="fas fa-chart-line"></i> Predictions</a></li>
+        <li><a href="#results">
+            <!-- Reports icon -->
+            <i class="fas fa-file-alt"></i> Results</a></li>
+        <li><a href="#keys">
+            <!-- Key Factors ICON -->
+            <i class="fas fa-key"></i> Key Factors</a></li>
+
+        <li><a href="#Visualization">
+            <i class="fas fa-chart-line"></i> Visualization</a></li>
+      </ul>
+
+      <a href="{{ url_for('logout') }}" class="logout">
+        <i class="bi bi-box-arrow-right"></i> Logout
+      </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <section id="dashboard">
+        <div class="container justify-content-center">
+          <div class="row">
+            <div class="col-md-6 mt-4">
+              <div class="card mb-3">
+                <div class="card-header">
+                  <i class="fas fa-chart-line"></i> Total Predictions
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">{{ total_predictions }}</h4>
+                  <p class="card-text">predictions predicted by this system</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 mt-4">
+              <div class="card mb-3">
+                <div class="card-header">
+                  <i class="fas fa-users"></i> Total Users
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title">{{ total_users }}</h4>
+                  <p class="card-text">users registered in the database</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="predictions">
+        <h2 class="pred-title text-center">Prediction From</h2>
+        <div class="container" style="height: 60%;">
+          <form id="form" method="post" action="/pred">
+            <!-- First row with a single input -->
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label for="username">Username:</label>
+                  <input type="text" class="form-control" id="username"
+                    name="username" value="{{ user_data[2] }}" readonly>
+                </div>
+              </div>
+            </div>
+
+            <!-- Remaining rows with three inputs each -->
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="gender">Gender:</label>
+                  <select class="form-control" id="gender" name="gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="part_time_job">Part-time Job:</label>
+                  <select class="form-control" id="part_time_job"
+                    name="part_time_job">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="absence_days">Absence Days:</label>
+                  <input type="number" class="form-control" id="absence_days"
+                    name="absence_days" min="0" max="30">
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="extracurricular_activities">Extracurricular
+                    Activities:</label>
+                  <select class="form-control" id="extracurricular_activities"
+                    name="extracurricular_activities">
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="weekly_self_study_hours">Weekly Self-Study
+                    Hours:</label>
+                  <input type="number" class="form-control"
+                    id="weekly_self_study_hours" name="weekly_self_study_hours"
+                    min="0" max="168">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="math_score">Math Score:</label>
+                  <input type="number" class="form-control" id="math_score"
+                    name="math_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="history_score">History Score:</label>
+                  <input type="number" class="form-control" id="history_score"
+                    name="history_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="physics_score">Physics Score:</label>
+                  <input type="number" class="form-control" id="physics_score"
+                    name="physics_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="chemistry_score">Chemistry Score:</label>
+                  <input type="number" class="form-control" id="chemistry_score"
+                    name="chemistry_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="biology_score">Biology Score:</label>
+                  <input type="number" class="form-control" id="biology_score"
+                    name="biology_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="english_score">English Score:</label>
+                  <input type="number" class="form-control" id="english_score"
+                    name="english_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <label for="geography_score">Geography Score:</label>
+                  <input type="number" class="form-control" id="geography_score"
+                    name="geography_score" onchange="calculateScores()" min="0"
+                    max="100">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="total_score">Total Score:</label>
+                  <input type="number" class="form-control" id="total_score"
+                    name="total_score" readonly>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="average_score">Average Score:</label>
+                  <input type="number" step="0.000001" class="form-control"
+                    id="average_score" name="average_score" readonly>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block mt-4"
+              style="background-color: #190f49; border-color: #190f49;">Submit</button>
+          </form>
+        </div>
+        <div id="result"
+          style="background-color: #fcfcfc; width: 70%; margin: auto; margin-bottom: 8%; margin-top: 19px;"></div>
+      </section>
+
+      <section id="keys" class="keys-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h2 class="text-center mb-4">Key Factors Affecting Career
+                Aspirations</h2>
+              <div class="keys-grid">
+                <div class="card">
+                  <div class="card-header">Math Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Software Engineer, Scientist,
+                      Banker, Accountant, Construction Engineer, Game Developer,
+                      Stock Investor, Real Estate Developer</p> <br><br>
+                    <p><strong>Effect:</strong> Essential for careers requiring
+                      analytical, quantitative, and problem-solving skills.
+                      Important for tasks like programming, financial analysis,
+                      and engineering design.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">History Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Lawyer, Government Officer,
+                      Teacher, Writer, Designer, Artist</p> <br><br>
+                    <p><strong>Effect:</strong> Provides understanding of
+                      historical context, critical thinking, and analytical
+                      skills. Important for careers involving societal changes,
+                      teaching, and storytelling.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Physics Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Doctor, Software Engineer,
+                      Scientist, Construction Engineer, Game Developer</p>
+                    <br><br>
+                    <p><strong>Effect:</strong>Indicates strong analytical and
+                      problem-solving abilities, crucial for scientific
+                      phenomena, structural design, and software
+                      development.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Chemistry Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Doctor, Scientist</p> <br><br>
+                    <p><strong>Effect:</strong>Vital for medical and scientific
+                      fields, requiring knowledge of chemical processes and lab
+                      skills.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Biology Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Doctor, Scientist</p> <br><br>
+                    <p><strong>Effect:</strong>Crucial for healthcare and
+                      biological research, requiring understanding of biological
+                      systems.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">English Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Lawyer, Social Network Studies,
+                      Teacher, Writer, Designer, Artist, Game Developer</p>
+                    <br><br>
+                    <p><strong>Effect:</strong>Indicates strong communication
+                      and writing skills, essential for legal documents,
+                      teaching, and creative writing.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Geography Score</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Social Network Studies, Real
+                      Estate Developer</p> <br><br>
+                    <p><strong>Effect:</strong>Important for spatial data
+                      analysis and geographic context, useful for real estate
+                      planning and social network analysis.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Weekly Self-Study Hours</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Doctor, Scientist, Software
+                      Engineer, Lawyer, Accountant, Teacher, Engineer, Stock
+                      Investor</p> <br><br>
+                    <p><strong>Effect:</strong>Indicates dedication and
+                      motivation, associated with fields requiring intensive
+                      study and academic excellence.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Absence Days</div>
+                  <div class="card-body">
+                    <p><strong>Effect:</strong>Fewer absence days correlate with
+                      better academic performance and higher career aspirations.
+                      Frequent absences indicate disengagement.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Extracurricular Activities</div>
+                  <div class="card-body">
+                    <p><strong>Careers:</strong> Business Owner, Teacher,
+                      Government Officer</p> <br><br>
+                    <p><strong>Effect:</strong>Enhances soft skills, leadership,
+                      and teamwork, beneficial for careers requiring
+                      interpersonal skills.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Gender</div>
+                  <div class="card-body">
+                    <p><strong>Effect:</strong>Career aspirations show
+                      gender-specific trends, with more males in engineering and
+                      technology and more females in teaching and
+                      healthcare.</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">Part-time Job</div>
+                  <div class="card-body">
+                    <p><strong>Effect:</strong>Provides practical experience and
+                      financial independence, influencing career choices
+                      balancing work and study.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="keys-image">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="Visualization" class="visualization-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-12">
+              <h2 class="text-center mb-4">Visualization Images of the
+                Model</h2>
+              <div class="row">
+
+                <!-- First Image -->
+                <div class="col-md-6 mb-3">
+                  <div class="card">
+                    <div class="card-header">Model Accuracies</div>
+                    <div class="card-body text-center">
+                      <img src="static/Model Accuracies.png" class="img-fluid"
+                        alt="Model Accuracies">
+                      <p class="mt-2">The chart shows students' career
+                        aspirations using SMOTE for class balance. Random Forest
+                        (99.38%) and XGBoost (99.10%) excelled in accuracy,
+                        followed by Decision Tree (97.48%) and K Nearest
+                        Neighbors (88.73%). Gradient Boosting (86.24%) and
+                        Support Vector (80.52%) performed moderately well.
+                        Logistic Regression (44.20%), Gaussian Naive Bayes
+                        (26.11%), and AdaBoost (20.63%) were less effective.
+                        Ensemble methods like Random Forest and XGBoost are
+                        ideal for this dataset</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Second Image -->
+                <div class="col-md-6 mb-3">
+                  <div class="card">
+                    <div class="card-header">Training and Testing Sets
+                      Performance</div>
+                    <div class="card-body text-center">
+                      <img
+                        src="static/Performance of Machine Learning Models on Training and Testing Sets.png"
+                        class="img-fluid" alt="Performance of Models">
+                      <p class="mt-2">The chart compares Random Forest, XGBoost,
+                        and Decision Tree models. Random Forest excels with 100%
+                        training and 99.37% testing accuracy, indicating strong
+                        generalization. XGBoost shows overfitting, with 99.09%
+                        training but only 80.07% testing accuracy. Decision Tree
+                        balances with 97.47% training and 87.07% testing
+                        accuracy, though testing could improve. Overall, Random
+                        Forest is the best performer for this dataset</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Third Image -->
+                <div class="col-md-6 mb-3">
+                  <div class="card">
+                    <div class="card-header">Predicted Career Path
+                      Probabilities</div>
+                    <div class="card-body text-center">
+                      <img src="static/Predicted Career Path Probabilities.png"
+                        class="img-fluid" alt="Career Path Probabilities">
+                      <p class="mt-2">
+                        The chart is a bar chart that displays the predicted
+                        probabilities of various career paths for students based
+                        on a predictive model. Careers with high probabilities,
+                        such as Software Engineer, suggest these are likely
+                        suitable and popular choices among students. As opposed,
+                        careers with lower probabilities, like Government
+                        Officer and Designer, are less likely to be chosen. This
+                        chart helps students identify which career paths are
+                        most aligned with their profiles, aiding in informed
+                        career decision-making</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Fourth Image -->
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-header">Support per Class</div>
+                    <div class="card-body text-center">
+                      <img src="static/Support per Class.png"" class="img-fluid"
+                        alt="Support per Class">
+                      <p class="mt-2">The chart is a bar graph showing the
+                        support per class, which represents the number of
+                        instances for each class in a dataset.
+                        This chart visualizes the distribution of sample counts
+                        across different classes, highlighting which classes
+                        have more data available for analysis and which have
+                        less. Understanding support per class is crucial for
+                        evaluating model performance, as it can impact the
+                        training and accuracy of machine learning models.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-header"> BEFOR USEING THE SMOTE </div>
+                    <div class="card-body text-center">
+                      <img src="static/SMOTE1.png" class="img-fluid"
+                        alt=" SMOTE Distribution"">
+                      <p class="mt-2"> This chart, which favors some categories
+                        over others, shows the imbalanced character of students'
+                        professional expectations. To guarantee balanced and
+                        appropriate model training in machine learning
+                        applications, it is necessary to fix this difference. It
+                        is expected that the use of SMOTE will reduce these
+                        differences by raising the proportion of cases in the
+                        underrepresented groups. </p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Fifth Image -->
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-header"> AFTER USEING THE SMOTE</div>
+                    <div class="card-body text-center">
+                      <img src="static/SMOTE.png" class="img-fluid"
+                        alt=" SMOTE Distribution"">
+                      <p class="mt-2"> The graph shows that the distribution of
+                        career goals has equalized following the application of
+                        SMOTE. This balancing guarantees that every category is
+                        represented equally, which is essential for improving
+                        predictive accuracy and preventing bias in machine
+                        learning models that are being trained across all career
+                        trajectories.</p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Sixth Image -->
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-header">Feature Importance</div>
+                    <div class="card-body text-center">
+                      <img
+                        src="static/Precision Recall and F1 Score per Class.png"
+                        class="img-fluid"
+                        alt="Precision Recall and F1 Score per Class">
+                      <p class="mt-2">The heatmap evaluates model performance
+                        using precision, recall, and F1-score for each class. <br>
+                        Accuracy: Ratio of correctly predicted instances to
+                        total instances. <br>
+                        precision measures the value of the true prediction and indicates how many times the model predicted correctly.<br>
+                        Recall the answer for the number of correctly identified real positive parts.<br>
+                        F-score, is a balanced measure of test accuracy. Integrated method of test performance and recovery.<br>
+                        Class 6: F1-score 0.94 (perfect recall, high precision).<br>
+                        Class 10: F1-score 0.95 (precision 0.92, recall 0.97).<br>
+                        Class 3 and 7: F1-scores around 0.90.<br>
+                        Class 16: Metrics around 0.84.<br>
+                        Class 4 and 5: Low recall and F1-scores (0.54, 0.45),indicating poor detection.<br>
+                        This summary highlights the model's strengths and
+                        weaknesses across classes.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="card">
+                    <div class="card-header">Confusion Matrix for RandomForest
+                      Classifier</div>
+                    <div class="card-body text-center">
+                      <img
+                        src="static/Confusion Matrix for RandomForestClassifier.png"
+                        class="img-fluid" alt>
+                      <p class="mt-2">A confusion matrix is a technique for summarizing the performance of a classification 
+                        algorithm. The number of correct and incorrect predictions is aggregated and broken down 
+                        by count value.<br>
+                        Correct Predictions (Diagonal Values):<br>
+                        The diagonal cells show accurate predictions for each class, e.g., 192 instances for Class 0, 212 for Class 4, and 195 for Class 12.<br>
+                        High diagonal numbers indicate the model's strong accuracy in classifying instances correctly.<br>
+                        Misclassifications (Off-Diagonal Values):<br>
+                        Off-diagonal cells show misclassified instances, such as 3 instances of Class 5 predicted as Class 3.<br>
+                        These highlight where the model struggles, pointing out specific areas for improvement.<br>
+                        Overall Performance:The model shows high accuracy, with most predictions correct and few errors.The confusion matrix shows effective classification across multiple classes, with minimal misclassification
+                        This summary highlights the Random Forest Classifier's effectiveness in predicting classes accurately while noting areas of misclassification for improvement.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="results">
+            <div id="printArea">
+              <div class="container mt-4 mb-30">
+                <div class="table-container">
+                  <h2 class="text-center">All Predicted Data</h2>
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Gender</th>
+                        <th>Math</th>
+                        <th>History</th>
+                        <th>Physics</th>
+                        <th>Chemistry</th>
+                        <th>Biology</th>
+                        <th>English</th>
+                        <th>Geography</th>
+                        <th>Total</th>
+                        <th>Average</th>
+                        <th> Top Probability</th>
+                        <th> Possible Probability</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for prediction in all_predictions %}
+                      <tr>
+                        <td>{{ prediction[0] }}</td>
+                        <td>{{ prediction[1] }}</td>
+                        <td>{{ prediction[6] }}</td>
+                        <td>{{ prediction[7] }}</td>
+                        <td>{{ prediction[8] }}</td>
+                        <td>{{ prediction[9] }}</td>
+                        <td>{{ prediction[10] }}</td>
+                        <td>{{ prediction[11] }}</td>
+                        <td>{{ prediction[12] }}</td>
+                        <td>{{ prediction[13] }}</td>
+                        <td>{{ prediction[14] }}</td>
+                        <td>{{ prediction[16] }}</td>
+                        <td>{{ prediction[17] }}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mt-4 mb-4 text-center w-full">
+              <button class="btn btn-success text-light mx-2"
+                id="printStatement"><i class="fas fa-print text-light"></i>
+                Print Report</button>
+              <button class="btn btn-info text-light mx-2"
+                id="exportStatement"><i
+                  class="fas fa-file-excel text-light"></i> Export
+                Report</button>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <p>&copy; 2024 Studies Recommendation System Dashboard. All rights
+            reserved.</p>
+        </footer>
+        <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        <script>
+    // JavaScript code to handle menu clicks and show the relevant sections
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all the menu items
+      const menuItems = document.querySelectorAll('.sidebar-menu li a');
+
+      // Get all the sections
+      const sections = document.querySelectorAll('section');
+
+      // Show the initially active section (first section)
+      sections[0].style.display = 'block';
+
+      // Add event listeners to menu items
+      menuItems.forEach(function(item) {
+        item.addEventListener('click', function(e) {
+          e.preventDefault();
+
+          // Hide all sections
+          sections.forEach(function(section) {
+            section.style.display = 'none';
+          });
+
+          // Get the target section based on the clicked menu item
+          const target = document.querySelector(item.getAttribute('href'));
+
+          // Show the target section
+          target.style.display = 'block';
+
+          // Remove active class from all menu items
+          menuItems.forEach(function(item) {
+            item.classList.remove('active');
+          });
+
+          // Add active class to the clicked menu item
+          item.classList.add('active');
+        });
+      });
+    });
+  </script>
+      </body>
+    </html>

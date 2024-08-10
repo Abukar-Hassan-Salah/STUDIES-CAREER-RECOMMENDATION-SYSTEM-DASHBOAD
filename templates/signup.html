@@ -1,0 +1,191 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title> Studies Recommendation System || Sign Up</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <style>
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+
+    }
+
+    .signup-container {
+      max-width: 900px;
+      width: 90%;
+
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+
+
+    .signup-form {
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .signup-form h2 {
+      color: #190f49;
+      font-weight: normal;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .signup-form .form-group {
+      margin-bottom: 20px;
+    }
+
+    .signup-form .btn {
+      background-color: #190f49;
+      color: white;
+      font-weight: normal;
+      border: none;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .signup-form .btn:hover {
+      background-color: #11175c;
+    }
+
+    .signup-form a {
+      color: #190f49;
+      font-weight: normal;
+    }
+
+    .signup-form .additional-links {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+
+    </div>
+    <div class="col-md-6 mx-auto">
+      <div class="signup-container">
+        <div class="signup-form">
+          <h2>Sign Up</h2>
+          {% if error %}
+          <div class="alert alert-danger" role="alert">{{ error }}!</div>
+          {% endif %}
+          <form method="post" action="{{ url_for('signup') }}" onsubmit="return validateForm()">
+            <div class="form-group">
+              <input type="text" name="name" placeholder="Name" class="form-control" id="name" value="{{ name }}" />
+            </div>
+            <div class="form-group">
+              <input type="text" name="username" placeholder="Username" class="form-control" id="username" value="{{ username }}" />
+            </div>
+            <!-- <div class="form-group">
+              <input type="email" name="email" placeholder="Email" class="form-control" id="email" value="{{ email }}" />
+            </div> -->
+            <div class="form-group password-wrapper">
+              <input type="password" name="password" placeholder="Password" class="form-control" id="password" value="{{ password }}" />
+              <span class="toggle-password" onclick="togglePasswordVisibility()">
+                <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+              </span>
+            </div>
+            <button type="submit" class="btn">Sign Up</button>
+          </form>
+          <div class="additional-links">
+            <p>
+              Already have an account?
+              <a href="{{ url_for('login') }}">Log In</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- Include Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Include Bootstrap Icons -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+    <script>
+      function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          togglePasswordIcon.classList.remove('bi-eye-slash');
+          togglePasswordIcon.classList.add('bi-eye');
+        } else {
+          passwordInput.type = 'password';
+          togglePasswordIcon.classList.remove('bi-eye');
+          togglePasswordIcon.classList.add('bi-eye-slash');
+        }
+      }
+
+      // function validateForm() {
+      //   const name = document.getElementById('name').value;
+      //   const username = document.getElementById('username').value;
+      //   const password = document.getElementById('password').value;
+
+      //   if (name.trim() === '') {
+      //     alert('Name cannot be empty.');
+      //     return false;
+      //   }
+
+      //   if (username.trim() === '') {
+      //     alert('Username cannot be empty.');
+      //     return false;
+      //   }
+
+    
+
+      //   if (password.trim() === '') {
+      //     alert('Password cannot be empty.');
+      //     return false;
+      //   }
+
+      //   // if (password.length < 8) {
+      //   //   alert('Password must be at least 8 characters long.');
+      //   //   return false;
+      //   // }
+
+      //   return true;
+      // }
+    
+    </script>
+</body>
+
+</html>
